@@ -1,6 +1,7 @@
 -- 1
 -- Napisz polecenie zwracające pracowników, których nazwisko zaczyna się na literę 
 -- K,L,M,N,W
+
 SELECT last_name
 FROM employees
 WHERE SUBSTR(last_name, 1, 1) IN ('K', 'L', 'M', 'N', 'W');
