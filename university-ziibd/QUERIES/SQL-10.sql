@@ -1,45 +1,49 @@
---=====1=====
-CREATE TABLE dept
-(id NUMBER(7) CONSTRAINT department_id_pk PRIMARY KEY,
-name VARCHAR(25));
-
-DESCRIBE dept
-
---=====2=====
-INSERT INTO dept
-SELECT department_id, department_name
-FROM departments;
-
---=====3=====
-CREATE TABLE emp
-    (id NUMBER(7),
-    last_name VARCHAR(25),
-    first_name VARCHAR(25),
-    dept_id NUMBER(7)
-     CONSTRAINT emp_dept_id_FK REFERENCES dept (id)
-    );
+-- 1
+CREATE OR REPLACE VIEW employees_vu AS
+    SELECT employee_id, last_name, department_id
+    FROM employees;
     
-DESCRIBE emp
+-- 2
+SELECT *
+FROM employees_vu;
 
---===4====
-CREATE TABLE employees2 AS
-    SELECT employee_id id, first_name, last_name, salary,
-    department_id dept_id
-FROM employees;
+-- 3
+SELECT employee, department_id
+FROM employees_vu;
 
---===5====
+-- 4
+CREATE VIEW dept50 AS
+    SELECT employee_id empno, last_name employee,
+           department_id deptno
+    FROM employees
+    WHERE department_id = 50
+    WITH CHECK OPTION CONSTRAINT emp_dept_50;
 
-ALTER TABLE employees2 READ ONLY;
+-- 5
+DESCRIBE dept50
+SELECT *
+FROM dept50;
 
---===6====
-INSERT INTO employees2
-VALUES (34, 'Grant', 'Marcie', 5687, 10);
+-- 6
+UPDATE dept50
+SET deptno = 80
+WHERE employee = 'Matos';
 
---===7====
-ALTER TABLE employees2 READ WRITE;
+-- 7
+CREATE SEQUENCE dept_id_seq
+    START WITH 200
+    INCREMENT BY 10
+    MAXVALUE 1000;
+    
+-- 8
+INSERT INTO dept
+VALUES (dept_id_seq.nextval, 'Education');
 
-INSERT INTO employees2
-VALUES (34, 'Grant', 'Marcie', 5678, 10);
+INSERT INTO dept
+VALUES (dept_id_seq.nextval, 'Administration');
 
---===8====
-DROP TABLE employees2;
+-- 9
+CREATE INDEX dept_name_idx ON dept (name);
+
+-- 10
+CREATE SYNONYM emp FOR EMPLOYEES;
